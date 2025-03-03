@@ -32,13 +32,39 @@ public class Employee {
 	private String firstName;
 	private String lastName;
 	private String description;
+	private Integer jobYears;
 
-	private Employee() {}
+	protected Employee() {}
 
-	public Employee(String firstName, String lastName, String description) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.description = description;
+	public Employee(String firstName, String lastName, String description, Integer jobYears) {
+
+		if(areParametersValid(firstName, "First name"))
+			this.firstName = firstName;
+
+		if(areParametersValid(lastName, "Last name"))
+			this.lastName = lastName;
+
+		if(areParametersValid(description, "Description"))
+			this.description = description;
+
+		if(isJobYearsValid(jobYears))
+			this.jobYears = jobYears;
+	}
+
+	private boolean areParametersValid(String parameter, String fieldName) {
+
+		if(parameter == null || parameter.isBlank())
+			throw new IllegalArgumentException(fieldName + " cannot be null or empty!");
+
+		return true;
+	}
+
+	private boolean isJobYearsValid(Integer jobYears) {
+
+		if(jobYears == null || jobYears < 0)
+			throw new IllegalArgumentException("Job Years must be a positive number!");
+
+		return true;
 	}
 
 	@Override
@@ -49,13 +75,14 @@ public class Employee {
 		return Objects.equals(id, employee.id) &&
 			Objects.equals(firstName, employee.firstName) &&
 			Objects.equals(lastName, employee.lastName) &&
-			Objects.equals(description, employee.description);
+			Objects.equals(description, employee.description) &&
+				Objects.equals(jobYears, employee.jobYears);
 	}
 
 	@Override
 	public int hashCode() {
 
-		return Objects.hash(id, firstName, lastName, description);
+		return Objects.hash(id, firstName, lastName, description, jobYears);
 	}
 
 	public Long getId() {
@@ -90,6 +117,10 @@ public class Employee {
 		this.description = description;
 	}
 
+	public int getJobYears() { return jobYears; }
+
+	public void setJobYears(int jobYears) { this.jobYears = jobYears; }
+
 	@Override
 	public String toString() {
 		return "Employee{" +
@@ -97,6 +128,7 @@ public class Employee {
 			", firstName='" + firstName + '\'' +
 			", lastName='" + lastName + '\'' +
 			", description='" + description + '\'' +
+				", jobYears='" + jobYears + '\'' +
 			'}';
 	}
 }
