@@ -232,7 +232,12 @@ git tag v1.2.0
 git push origin v1.2.0
 ```  
 
-The repository was also **tagged with ca1-part1** to signify the completion of this phase of the assignment. FECHAR OS ISSUES!!!
+After tagging the updated version of the project, a commit was made to close the issues related to this part of the assignment. The commit message was configured to automatically close the issues on GitHub using the keyword Fixes #1 and #2, as shown in the command below:
+
+```
+git commit -m "Fixes #1 and #2: Update README.md and resolve issues"
+```  
+The repository was also **tagged with ca1-part1** to signify the completion of this phase of the assignment.
 
 
 
