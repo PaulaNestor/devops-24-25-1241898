@@ -51,7 +51,7 @@ public class Employee {
 		if(isJobYearsValid(jobYears))
 			this.jobYears = jobYears;
 
-		if(areParametersValid(email, "Email"))
+		if(areParametersValid(email, "Email") && isEmailValid(email))
 			this.email = email;
 	}
 
@@ -67,6 +67,14 @@ public class Employee {
 
 		if(jobYears == null || jobYears < 0)
 			throw new IllegalArgumentException("Job Years must be a positive number!");
+
+		return true;
+	}
+
+	private boolean isEmailValid(String email) {
+
+		if(!email.contains("@"))
+			throw new IllegalArgumentException("Email must contain '@'!");
 
 		return true;
 	}
