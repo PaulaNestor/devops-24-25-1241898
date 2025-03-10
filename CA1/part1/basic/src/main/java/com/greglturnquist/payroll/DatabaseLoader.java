@@ -36,7 +36,8 @@ public class DatabaseLoader implements CommandLineRunner { // <2>
 	@Override
 	public void run(String... strings) throws Exception {// <4>
 		try {
-			this.repository.save(new Employee("Frodo", "Baggins", "ring bearer", 2));
+			this.repository.save(new Employee("Frodo", "Baggins", "ring bearer", 2, "frodobaggins@gmail.com"));
+			this.repository.save(new Employee("Samwise", "Gamgee", "assistent", 2, "samwisegamgee@gmail.com"));
 		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 		}
