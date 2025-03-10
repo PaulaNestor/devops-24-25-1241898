@@ -33,10 +33,11 @@ public class Employee {
 	private String lastName;
 	private String description;
 	private Integer jobYears;
+	private String email;
 
 	protected Employee() {}
 
-	public Employee(String firstName, String lastName, String description, Integer jobYears) {
+	public Employee(String firstName, String lastName, String description, Integer jobYears, String email) {
 
 		if(areParametersValid(firstName, "First name"))
 			this.firstName = firstName;
@@ -49,6 +50,9 @@ public class Employee {
 
 		if(isJobYearsValid(jobYears))
 			this.jobYears = jobYears;
+
+		if(areParametersValid(email, "Email"))
+			this.email = email;
 	}
 
 	private boolean areParametersValid(String parameter, String fieldName) {
@@ -76,13 +80,14 @@ public class Employee {
 			Objects.equals(firstName, employee.firstName) &&
 			Objects.equals(lastName, employee.lastName) &&
 			Objects.equals(description, employee.description) &&
-				Objects.equals(jobYears, employee.jobYears);
+				Objects.equals(jobYears, employee.jobYears) &&
+				Objects.equals(email, employee.email);
 	}
 
 	@Override
 	public int hashCode() {
 
-		return Objects.hash(id, firstName, lastName, description, jobYears);
+		return Objects.hash(id, firstName, lastName, description, jobYears, email);
 	}
 
 	public Long getId() {
@@ -121,6 +126,14 @@ public class Employee {
 
 	public void setJobYears(int jobYears) { this.jobYears = jobYears; }
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public String toString() {
 		return "Employee{" +
@@ -129,6 +142,7 @@ public class Employee {
 			", lastName='" + lastName + '\'' +
 			", description='" + description + '\'' +
 				", jobYears='" + jobYears + '\'' +
+				", email='" + email + '\'' +
 			'}';
 	}
 }
