@@ -40,7 +40,8 @@ class EmployeeTest {
                 arguments("John", "Doe", "Developer", -1, "johndoe@gmail.com", "Job Years must be a positive number!"),
                 arguments("John", "Doe", "Developer", 5, null, "Email cannot be null or empty!"),
                 arguments("John", "Doe", "Developer", 5, "", "Email cannot be null or empty!"),
-                arguments("John", "Doe", "Developer", 5, " ", "Email cannot be null or empty!")
+                arguments("John", "Doe", "Developer", 5, " ", "Email cannot be null or empty!"),
+                arguments("John", "Doe", "Developer", 5, "johndoegmail.com", "Email must contain '@'!")
         );
     }
     @ParameterizedTest
