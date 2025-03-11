@@ -296,4 +296,61 @@ After merging the branches and pushing the changes a new tag was created:
 git tag v1.3.1
 git push origin v1.3.1
 ``` 
-At the end of the assignment, the repository was **tagged with ca1-part1.2**.
+At the end of the assignment, the repository was **tagged with ca1-part1.2**.  
+
+## Alternative solution
+
+**Git vs SVN**:
+
+An alternative solution to Git for version control is Apache Subversion (SVN), which is a centralized version control system, contrasting with the distributed model that Git follows. This means that in Git, every user has a complete copy of the repository, including the entire version history, allowing commits to be made locally before pushing changes to a remote repository. In contrast, SVN relies on a central server to store all changes, requiring commits to be sent directly to the server without maintaining a local commit history. This ensures that the latest changes are always available to all team members but also means that users must frequently update their working copies to integrate changes made by others.
+SVN tracks changes at the file level, whereas Git tracks snapshots of the entire project. This fundamental difference affects performance, with Git making things quicker and more efficient for teams working in different locations as most operations (such as commit, branch, and merge) occur locally, without needing constant communication with a central server. SVN, on the other hand, keeps everything in one central place, which can make it easier to manage and control changes, but requires more frequent communication with the server.
+Branching also differs significantly between the two systems. Unlike Git, where branches are seamlessly integrated, SVN branches exist as separate directories within the repository. Users must manually merge branches when integrating changes, making the process more complex compared to Git’s automated merging capabilities. Additionally, Git enables users to work offline and commit changes locally before syncing, while SVN requires an active connection to the server for committing changes.
+
+**Using SVN for the Assignment**:
+
+The next section describes the commands that can be used to implement the alternative design:
+
+* Setting up the repository: The following command crates a new SVN repository at the specified path on the server, setting up the necessary directory structure:
+```
+svnadmin create /path/to/repository
+```
+
+* Copying the basic folder of the Tutorial application: The next step is to import the basic folder from the Tutorial React.js and Spring Data REST application into the SVN repository. This can be done using the following commands:
+```
+cd /path/to/TutorialReactSpringDataREST
+svn import ./basic file:///path/to/svn_repository/my_project -m "Importing basic folder from tutorial"
+
+```
+* Commiting changes: To commit changes (for example, after developing the jobYears field) the following steps should be used:
+```
+svn add .
+svn commit -m "Commit message"
+```
+* Creating tags: Tags can also be created in SNV by copying the contents of the trunk directory (the main development branch) to a new folder under tags. The following command shows the creation of the **tag v1.2.0**, which marks the version of the assignment after adding the jobYears field and unit tests for testing the creation of Employees and validation of their attributes:
+```
+svn copy file:///path/to/svn_repository/my_project/trunk file:///path/to/svn_repository/my_project/tags/v1.2.0 -m "Tagging version 1.2.0"
+```
+* Branches:  In SVN, branches are simply copies of the repository stored under a specific directory structure. To create a new branch for implementing a feature (e.g., adding an email field to the Employee class), the following command can be used:
+```
+svn copy file:///path/to/svn_repository/my_project/trunk file:///path/to/svn_repository/my_project/branches/email-feature -m "Creating a branch for email feature"
+```  
+ This command duplicates the trunk (the main branch) into a new branch named email-feature.
+ The following command can be used to switch to the newly created branch:  
+```
+svn switch file:///path/to/svn_repository/my_project/branches/email-feature
+```
+ Once the feature is complete and tested, it can be merged back into the main development branch (trunk) using:
+```
+svn checkout file:///path/to/svn_repository/my_project/trunk ./trunk
+cd trunk
+svn merge file:///path/to/svn_repository/my_project/branches/email-feature
+svn commit -m "Merging email feature into trunk"
+```  
+In summary, while SVN offers a centralized and structured approach to version control, Git’s distributed model provides greater flexibility and efficiency, making the choice between them dependent on the project’s needs and collaboration style.  
+
+## Conclusions
+
+Working on the **Version Control with Git** assignment has given me valuable insights into version control systems and their impact on software development.
+Completing **part 1.1** of this assignment provided a solid foundation in version control with Git, emphasizing essential concepts such as committing changes, tagging versions. By working directly in the master branch, I gained a deeper understanding of how incremental changes contribute to a structured and traceable development process. One fundamental insight was the **importance of tags in version control**. By tagging specific points in the repository, such as initial releases and feature updates, it becomes easier to track progress, and reference stable versions. Additionally, the introduction of GitHub **issues** highlighted an effective way to track and manage tasks throughout development.  
+In **part 1.2**, I learned how to use Git branches, which helped me understand structured development better. Creating separate branches for new features and bug fixes made it easier to work on different tasks at the same time while keeping the main branch stable. This approach ensures that different aspects of the project can evolve independently. Merging branches also showed me how changes can be integrated in a controlled way, ensuring that each update is tested and reviewed before being added to the main project. I was also able to understand how using branches helps maintain a clear project history, making it easier to trace the progression of features and bug fixes.  
+This assignment improved my technical skills with Git and deepened my understanding of distributed version control systems. It also introduced me to SVN, a centralized version control system, and highlighted the main differences between it and Git. Overall, this experience not only improved my technical skills but also showed me how important version control is for keeping code reliable and managing software development.
