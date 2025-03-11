@@ -8,7 +8,8 @@ Course: DevOps
 
 ## Introduction
 
-This section of the report details the two parts of Part 1 of CA1. In **Part 1.1**, version control without branches was used to implement a new feature (job years), adding a new field to the application.
+This section of the report details the version control practices applied throughout Part 1 of CA1. The task was divided into two distinct parts: **part 1.1**, where version control was managed without branches, and **part 1.2**, which involved the use of Git branches to implement new features and address bugs.  
+In **part 1.1**, the focus was on adding a new feature (the jobYears field) to the application, with changes made directly to the main branch. This process involved editing the Employee class to incorporate the new field, along with adding validation logic and unit tests to ensure proper functionality. In **part 1.2**, I was able to use Git branches and understand how to better manage the development process by using them. Two separate branches were created: one for adding an email field to the application, and another to fix a bug related to email validation (ensuring the presence of the "@" symbol in the email address). As what was done in part 1.1 unit tests were also written for both new features, and debugging was performed to ensure everything functioned correctly. Finally, the changes were merged back into the main branch.
 
 ## Setup and configuration
 
@@ -61,6 +62,7 @@ For the **part 1.1** of this assignment, I created two issues:
 ![GitHub issues](part1/basic/images/issues.png)  
 
 By using issues, I maintained an organized workflow and ensured that key tasks were well-documented.  
+For the **part 1.2**, two issues were also created.
 
 ## Part 1.1 : Version control without branches  
 
@@ -237,7 +239,61 @@ After tagging the updated version of the project, a commit was made to close the
 ```
 git commit -m "Fixes #1 and #2: Update README.md and resolve issues"
 ```  
-The repository was also **tagged with ca1-part1** to signify the completion of this phase of the assignment.
+The repository was also **tagged with ca1-part1.1** to signify the completion of this phase of the assignment.  
 
+## Part 1.2 : Version control with branches  
 
+**Main goals:**  
 
+The second part of this assignment involved working with Git branches to implement new features and fix bugs. The main tasks involved creating branches for the addition of a new email field and for fixing a bug related to email validation, as well as writing tests to verify the integrity of the code after the changes made.
+To complete the assignment **two branches** were created. The first one, **email-field**, was used to implement the new email field in the application, ensuring the proper validation for employee creation. The second one, **fix-invalid-email**, was created to fix bugs related to invalid email entries, ensuring that the server only accepts employees with a valid email format (containing the "@" symbol).
+Similarly to what was done in part 1.1 of the assignment, the development of the project was tracked using tags.  
+
+**Implementation Details:**  
+
+The first step in the process was the creation of a new Git branch dedicated to implementing the email field feature. This was done by creating a new branch and pushing it to the remote repository. The commands used were:  
+```
+git checkout -b email-field
+git push -u origin email-field
+```  
+Once the branch was created and pushed to the repository, I proceeded with the necessary changes to implement the email field and its corresponding validation, as well as the unit tests for the validation of the new attribute. For details of the implementation, such as the files modified and the logic applied, I refer to the previous part of the assignment (part 1.1) as the process was very similar.  
+Once the email field and validation were implemented, I tested both the backend and frontend to ensure proper functionality. Similar to the process in part 1.1, I performed debugging on both the server and client sides.  
+The next step was to **merge the email-field branch into the main branch**. This ensures that the changes made in the feature branch are incorporated into the main branch.  
+First, the changes made were committed using the following commands:  
+```
+git add .
+git commit -m "Fixes #3: Finalized email field feature + tests"
+```  
+After committing the changes, I switched to the main branch to prepare for merging:  
+```
+git checkout main
+```  
+The following command merges the email-field branch into the main branch:
+```
+git merge email-field --no-ff
+```  
+The --no-ff option was used to ensure a **non-fast-forward merge**, preserving the branch history.  
+Finally, the changes made were pushed to the repository and a new tag was created:
+```
+git push origin main
+git tag v1.3.0
+git push origin v1.3.0
+```  
+The process of creating the **fix-invalid-email** branch followed a very similar approach to the one used for the previous branch. As with the email-field branch, I created a separate branch dedicated to addressing the specific bug of invalid email validation. The implementation for the email validation and its corresponding tests was also quite similar to the previous one, with the focus being on ensuring that the email field correctly validated the presence of the "@" symbol.  
+The **debugging** process for the fix-invalid-email branch was similar to the one performed in the email-field branch. In this case, I focused on testing the email validation directly in the DatabaseLoader class to ensure that the system correctly handled invalid email entries (emails without the "@" symbol). To do this, I added a test case with an invalid email in the DatabaseLoader and attempted to load the data. Upon running the application, the system produced an error message indicating that the email was invalid, confirming that the validation logic was functioning properly:
+```
+@Override
+public void run(String... strings) throws Exception {
+     this.repository.save(new Employee("Frodo", "Baggins", "ring bearer", 2, "frodobaggins@gmail.com"));
+     this.repository.save(new Employee("Samwise", "Gamgee", "assistent", 2, "samwisegamgeegmail.com"));
+}
+```  
+The error message displayed in the terminal was the following:
+![Invalid email](part1/basic/images/invalidEmail.png)  
+
+After merging the branches and pushing the changes a new tag was created:  
+```
+git tag v1.3.1
+git push origin v1.3.1
+``` 
+At the end of the assignment, the repository was **tagged with ca1-part1.2**.
