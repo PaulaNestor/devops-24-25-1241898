@@ -353,4 +353,144 @@ In summary, while SVN offers a centralized and structured approach to version co
 Working on the **Version Control with Git** assignment has given me valuable insights into version control systems and their impact on software development.
 Completing **part 1.1** of this assignment provided a solid foundation in version control with Git, emphasizing essential concepts such as committing changes, tagging versions. By working directly in the master branch, I gained a deeper understanding of how incremental changes contribute to a structured and traceable development process. One fundamental insight was the **importance of tags in version control**. By tagging specific points in the repository, such as initial releases and feature updates, it becomes easier to track progress, and reference stable versions. Additionally, the introduction of GitHub **issues** highlighted an effective way to track and manage tasks throughout development.  
 In **part 1.2**, I learned how to use Git branches, which helped me understand structured development better. Creating separate branches for new features and bug fixes made it easier to work on different tasks at the same time while keeping the main branch stable. This approach ensures that different aspects of the project can evolve independently. Merging branches also showed me how changes can be integrated in a controlled way, ensuring that each update is tested and reviewed before being added to the main project. I was also able to understand how using branches helps maintain a clear project history, making it easier to trace the progression of features and bug fixes.  
-This assignment improved my technical skills with Git and deepened my understanding of distributed version control systems. It also introduced me to SVN, a centralized version control system, and highlighted the main differences between it and Git. Overall, this experience not only improved my technical skills but also showed me how important version control is for keeping code reliable and managing software development.
+This assignment improved my technical skills with Git and deepened my understanding of distributed version control systems. It also introduced me to SVN, a centralized version control system, and highlighted the main differences between it and Git. Overall, this experience not only improved my technical skills but also showed me how important version control is for keeping code reliable and managing software development.  
+
+# CA1 - Part2: Build Tools with Gradle - Technical Report  
+
+## Introduction  
+
+This report provides an overview of the tasks carried out during the **part 2  of the CA1 assignment (Build Tools with Gradle)**. This part of the assignment is divided into two different stages, that aim to  offer a hands-on experience with Gradle. The first stage is focused on the initial environment setup, while the second stage covers more complex operations such as creating tasks and unit testing into the build process.  
+The first part of the report explains how the **Gradle Basic Demo** (a multithreaded chat server) was implemented and tested. It shows the steps involved in building, launching, and connecting multiple clients to the server. The next part of the report describes how a new Gradle task was added to the project, demonstrating how Gradle can be extended to fit specific project needs and how a unit test was integrated to showcase how it improves the project's reliability by including unit tests in the build process. Finally, the report covers the addition of Copy and Zip tasks, which illustrate how Gradle can be used for managing files, an important aspect of project maintenance and distribution.  
+
+## Setup and configuration  
+
+**Copying the example application:** To begin the assignment, I used GitBash to create a folder called **part2** inside the CA1 folder. This was done using the following commands:
+```
+cd ProjetoDevOps/devops-24-25-141898/CA1
+mkdir part2
+```  
+Next, I downloaded the example application from the Bitbucket repository to a folder on my computer and copied the contents of the repository into the part2 folder using the following command: 
+```
+cp -r "C:\Users\paula\OneDrive\Ambiente de Trabalho\pssmatos-gradle_basic_demo" "C:\Users\paula\ProjetoDevOps\devops-24-25-1241898\CA1\part2"
+```  
+Finally, I committed the changes to the remote repository:
+```
+git add .
+git commit -m "Creation of folder part2 of CA1"
+``` 
+
+**Issue tracking:** As in part1 of the assignment, **issues** were created to track the progress of the tasks in part2. In this case, three issues were created, each corresponding to one of the main tasks required for this part of the assignment.  
+
+## Gradle Basic Demo  
+
+After reading the README file provided in the project, which explains how the application works, the next step was to test it. First, the following command was executed :
+```
+./gradlew build
+``` 
+This command compiled the source code and generated an executable .jar file, making the application ready to run. The image below shows the output of the build process, confirming that the build completed without errors:
+
+![Gradle Build](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewbuild.png)  
+
+Next, the following command was run in the terminal to start the chat server:
+```
+java -cp build/libs/basic_demo-0.1.0.jar basic_demo.ChatServerApp 59001
+``` 
+To test the client functionality, the command below was executed in both the Windows terminal and Git Bash:
+```
+./gradlew runClient
+``` 
+This command starts a chat client and connects it to the server, allowing interaction between multiple clients. The successful execution of these commands confirmed that the project was working as expected, as shown in the following images:  
+
+![chatter1](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/chatter1.png)  
+![chatter1](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/chatter2.png)  
+![chatter1](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/chatter3.png)  
+
+
+## Task runServer  
+
+In Gradle, tasks are used to **automate** various steps of a project, such as compiling, and running applications. By defining a set of instructions that Gradle executes when called, tasks help simplify repetitive actions in the development process.  
+To make running the server easier, a new task called **runServer** was added to the **build.gradle** file. This task, of type **JavaExec**, allows the server to be started automatically with a single command. It depends on the classes task, ensuring that all necessary classes are compiled before the server starts. The task is configured to launch the ChatServerApp main class on port 59001. Below is the code I added to the build.gradle file to create the task:
+```
+task runServer(type: JavaExec, dependsOn: classes) {
+    group = "DevOps"
+    description = "Launches a chat server that listens on port 59001"
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    mainClass = 'basic_demo.ChatServerApp'
+
+    args '59001'
+}
+```  
+The image bellow demonstrates the successful execution of the runServer task after executing the **./gradlew runServer** command:  
+
+![task runServer](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/runServer.png)  
+
+## Add a unit test  
+
+I created a unit test to verify that the App class works as expected. This test is located in a new directory: src/test/java/basic_demo, in a file called AppTest.java. The purpose of the test is to **ensure that the App class provides a greeting message that is not null**. To make sure the project is set up for testing, I included the necessary JUnit dependency in the build.gradle file:
+```
+testImplementation 'junit:junit:4.12'
+``` 
+The test code in **AppTest.java**, which will be shown below, is designed to verify if the greeting message is provided correctly:
+```
+public class AppTest {
+    @Test 
+    public void testAppHasAGreeting() {
+        App app = new App();
+        assertNotNull("app should have a greeting", app.getGreeting());
+    }
+}
+```  
+Once the test was set up, I ran the **.\gradlew test** command to execute it. The terminal output from running the command, shown in the image below, confirms that the test was successful:
+
+![Gradle Test](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewtest.png) 
+
+## Task backup 
+
+The next task created and added to the build.gradle file was the backup task (facilitates the backup of the project's source code). This task, of **type Copy**, automatically copies the contents of the src folder into a new folder called backup. Below is the code I added to the build.gradle file in order to create the task:  
+```
+task backup(type:Copy){
+    group = "DevOps"
+    description = "Makes a backup of the sources of the application (copy of the contents of the src folder to a new backup folder)"
+
+    from 'src'
+    into 'backup'
+}
+```  
+The image below demonstrates the successful execution of the **backup** task after running the **./gradlew backup** command:
+
+![Task backup](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewbackup.png)
+
+Following the task execution, the backup folder was created successfully in the project directory, as shown in the next image:  
+
+![Backup](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/backup.png)  
+
+Since this folder is automatically generated by Gradle and can be recreated at any time by running the backup task again, the backup folder was not committed to the remote repository. To maintain a clean repository, the backup folder was excluded and added to the .gitignore file. This ensures that backup files are stored locally and do not interfere with the version-controlled codebase.  
+
+## Task archive  
+
+The final task involved creating a task of **type Zip**. This task helps simplify the process of creating an archive of the project's source code. This last task automates the process of zipping the contents of the src folder into a .zip file, which can be useful for backups or distribution. The task is configured to create the archive file as src_backup.zip and store it in the build directory. Below is the code I added to the build.gradle file to create the task:  
+```
+task archive(type: Zip) {
+    group = "DevOps"
+    description = "Make an archive of the sources of the application (copy the contents of the src folder to a new zip file)"
+
+    from 'src'
+    archiveFileName.set('src_backup.zip')
+    destinationDirectory.set(file("$buildDir"))
+}
+```  
+The following image shows that the task was successfully executed after running the command ./gradlew archive:  
+
+![Task archive](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewarquive.png)  
+
+The image bellow shows the src_backup.zip file created in the build directory after the execution of the command:  
+
+![Archive](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/archive.png) 
+
+As with the backup task, since the src_backup.zip file is automatically generated by Gradle and can be recreated at any time, it was excluded from the remote repository.  
+
+## Conclusion  
+
+Completing this assignment helped me gain a better understanding of how Gradle can be used as a **build tool**. By creating tasks like **runServer**, **backup**, and **archive**, I automated important parts of the development process. Automating tasks makes the process faster, reduces the chances of mistakes, and saves time by avoiding manual work. Adding unit tests to the build process showed how automation can make testing easier and more reliable. Overall, this experience improved my knowledge of Gradle and how it can make development more efficient.
