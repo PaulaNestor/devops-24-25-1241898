@@ -338,4 +338,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Built folder
+src/main/resources/static/built
+
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,node,react,intellij,windows
