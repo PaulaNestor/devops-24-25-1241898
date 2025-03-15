@@ -79,5 +79,15 @@ task backup(type:Copy){
     into 'backup'
 }
 
+task archive(type: Zip) {
+    group = "DevOps"
+    description = "Make an archive of the sources of the application (copy the contents of the src folder to a new zip file)"
+
+    from 'src'
+    archiveFileName.set('src_backup.zip')
+    destinationDirectory.set(file("$buildDir"))
+}
+
+
 
 
