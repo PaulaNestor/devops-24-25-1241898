@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+node/
+package-lock.json
+src/main/resources/static/built/
+.frontend-gradle-plugin/
+
