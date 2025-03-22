@@ -6,14 +6,6 @@ Programme: SWitCH DEV
 
 Course: DevOps
 
-## Table of contents
-1. [Introduction](#introduction)
-2. [Setup and Configuration](#setup-and-configuration)
-3. [Part 1.1: Version Control Without Branches](#part-11--version-control-without-branches-)
-4. [Part 1.2: Version Control with Branches](#part-12--version-control-with-branches-)
-5. [Alternative Solution](#alternative-solution)
-6. [Conclusions](#conclusions)
-
 ## Introduction
 
 This section of the report details the version control practices applied throughout Part 1 of CA1. The task was divided into two distinct parts: **part 1.1**, where version control was managed without branches, and **part 1.2**, which involved the use of Git branches to implement new features and address bugs.  
@@ -363,17 +355,7 @@ Completing **part 1.1** of this assignment provided a solid foundation in versio
 In **part 1.2**, I learned how to use Git branches, which helped me understand structured development better. Creating separate branches for new features and bug fixes made it easier to work on different tasks at the same time while keeping the main branch stable. This approach ensures that different aspects of the project can evolve independently. Merging branches also showed me how changes can be integrated in a controlled way, ensuring that each update is tested and reviewed before being added to the main project. I was also able to understand how using branches helps maintain a clear project history, making it easier to trace the progression of features and bug fixes.  
 This assignment improved my technical skills with Git and deepened my understanding of distributed version control systems. It also introduced me to SVN, a centralized version control system, and highlighted the main differences between it and Git. Overall, this experience not only improved my technical skills but also showed me how important version control is for keeping code reliable and managing software development.  
 
-# CA1 - Part2: Build Tools with Gradle - Technical Report  
-
-## Table of contents
-1. [Introduction](#introduction)
-2. [Setup and Configuration](#setup-and-configuration)
-3. [Gradle Basic Demo](#gradle-basic-demo-)
-4. [runServer Task](#runserver-task-)
-5. [Add a Unit Test](#add-a-unit-test-)
-6. [backup Task](#backup-task-)
-7. [archive Task](#archive-task-)
-8. [Conclusion](#conclusion)
+# CA1 - Part2: Build Tools with Gradle - Technical Report
 
 ## Introduction  
 
@@ -515,16 +497,7 @@ At the end of the assignment, the repository was **tagged with ca1-part2**.
 
 Completing this assignment helped me gain a better understanding of how Gradle can be used as a **build tool**. By creating tasks like **runServer**, **backup**, and **archive**, I automated important parts of the development process. Automating tasks makes the process faster, reduces the chances of mistakes, and saves time by avoiding manual work. Adding unit tests to the build process showed how automation can make testing easier and more reliable. Overall, this experience improved my knowledge of Gradle and how it can make development more efficient.  
 
-# CA1 - Part3: Build Tools with Gradle - Technical Report  
-
-## Table of contents
-1. [Introduction](#introduction)
-2. [Setup and Configuration](#setup-and-configuration)
-3. [Integrating Existing Code](#integrating-existing-code-)
-4. [Configuring Gradle to Manage Frontend](#configuring-gradle-to-manage-frontend-)
-5. [Add Gradle Tasks: Task copyJar and Task cleanWebpack](#add-gradle-tasks-task-copyjar-and-task-cleanwebpack)
-6. [Alternative Solution](#alternative-solution)
-7. [Conclusion](#conclusion)
+# CA1 - Part3: Build Tools with Gradle - Technical Report
 
 ## Introduction  
 
