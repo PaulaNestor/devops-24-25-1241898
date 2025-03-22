@@ -665,7 +665,7 @@ The scripts section in **package.json** was modified to define commands for Webp
     "test": "echo Testing frontend"
 }
 ```  
-After completing these configurations, the command **./gradlew build** was executed, and I was able to confirm the project compiled successfully, including the frontend assets. The next step was the execution of the command **./gradlew bootRun** to start the Spring Boot application. Upon visiting `http://localhost:8080/` I was able to confirm the expected frontend content was displayed as shown in the image bellow:
+After completing these configurations, the command **./gradlew build** was executed, and I was able to confirm the project compiled successfully, including the frontend assets. The next step was the execution of the command **./gradlew bootRun** to start the Spring Boot application. Upon visiting `http://localhost:8080/` I was able to confirm the expected frontend content was displayed as shown in the image bellow:  
 ![Frontend](part3/react-and-spring-data-rest-basic/images/frontend.png)
 This setup ensures that Gradle properly handles the frontend, allowing the project to run smoothly with both backend and frontend working together as expected.  
 
@@ -692,7 +692,7 @@ task cleanWebpack(type: Delete) {
 }
 clean.dependsOn cleanWebpack
 ``` 
-This task ensures that the files in the src/main/resources/static/built/ directory are **deleted before the standard Gradle clean task runs**, ensuring a clean build environment. As shown in the first image, **before executing the task**, the built directory exists within src/main/resources/static/:
+This task ensures that the files in the src/main/resources/static/built/ directory are **deleted before the standard Gradle clean task runs**, ensuring a clean build environment. As shown in the first image, **before executing the task**, the built directory exists within src/main/resources/static/:  
 ![Task cleanWebpack Before](part3/react-and-spring-data-rest-basic/images/TaskcleanWebpackBefore.png)
 
 To execute the cleanWebpack task, the command **./gradlew cleanWebpack** was run. The following image shows that the **built directory was successfully deleted** after running the task:  
