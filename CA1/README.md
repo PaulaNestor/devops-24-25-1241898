@@ -666,7 +666,7 @@ The scripts section in **package.json** was modified to define commands for Webp
 }
 ```  
 After completing these configurations, the command **./gradlew build** was executed, and I was able to confirm the project compiled successfully, including the frontend assets. The next step was the execution of the command **./gradlew bootRun** to start the Spring Boot application. Upon visiting `http://localhost:8080/` I was able to confirm the expected frontend content was displayed as shown in the image bellow:  
-![Frontend](part3/react-and-spring-data-rest-basic/images/frontend.png)
+![Frontend](part3/react-and-spring-data-rest-basic/images/frontend.png)  
 This setup ensures that Gradle properly handles the frontend, allowing the project to run smoothly with both backend and frontend working together as expected.  
 
 ## Add Gradle Tasks: Task copyJar and Task cleanWebpack
