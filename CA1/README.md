@@ -8,7 +8,7 @@ Course: DevOps
 
 ## Introduction
 
-This section of the report details the version control practices applied throughout Part 1 of CA1. The task was divided into two distinct parts: **part 1.1**, where version control was managed without branches, and **part 1.2**, which involved the use of Git branches to implement new features and address bugs.  
+This section of the report details the version control practices applied throughout part 1 of CA1. The task was divided into two distinct parts: **part 1.1**, where version control was managed without branches, and **part 1.2**, which involved the use of Git branches to implement new features and address bugs.  
 In **part 1.1**, the focus was on adding a new feature (the jobYears field) to the application, with changes made directly to the main branch. This process involved editing the Employee class to incorporate the new field, along with adding validation logic and unit tests to ensure proper functionality. In **part 1.2**, I was able to use Git branches and understand how to better manage the development process by using them. Two separate branches were created: one for adding an email field to the application, and another to fix a bug related to email validation (ensuring the presence of the "@" symbol in the email address). As what was done in part 1.1 unit tests were also written for both new features, and debugging was performed to ensure everything functioned correctly. Finally, the changes were merged back into the main branch.
 
 ## Setup and configuration
@@ -379,13 +379,13 @@ git add .
 git commit -m "Creation of folder part2 of CA1"
 ``` 
 
-**Issue tracking:** As in part1 of the assignment, **issues** were created to track the progress of the tasks in part2. In this case, three issues were created, each corresponding to one of the main tasks required for this part of the assignment.  
+**Issue tracking:** As in part1 of the assignment, **issues** were created to track the progress of the tasks in part2. In this case, three issues were created, each corresponding to one of the main tasks required for this part of the assignment (Issue #5 - Task to execute the server, Issue #6 - Task of type Copy to make a backup of the sources of the application, Issue #7 - Task of type Zip to make an archive of the sources of the application #7).
 
 ## Gradle Basic Demo  
 
 After reading the README file provided in the project, which explains how the application works, the next step was to test it. First, the following command was executed :
 ```
-./gradlew build
+gradlew build
 ``` 
 This command compiled the source code and generated an executable .jar file, making the application ready to run. The image below shows the output of the build process, confirming that the build completed without errors:
 
@@ -397,7 +397,7 @@ java -cp build/libs/basic_demo-0.1.0.jar basic_demo.ChatServerApp 59001
 ``` 
 To test the client functionality, the command below was executed in both the Windows terminal and Git Bash:
 ```
-./gradlew runClient
+gradlew runClient
 ``` 
 This command starts a chat client and connects it to the server, allowing interaction between multiple clients. The successful execution of these commands confirmed that the project was working as expected, as shown in the following images:  
 
@@ -422,13 +422,13 @@ task runServer(type: JavaExec, dependsOn: classes) {
     args '59001'
 }
 ```  
-The image bellow demonstrates the successful execution of the runServer task after executing the **./gradlew runServer** command:  
+The image bellow demonstrates the successful execution of the runServer task after executing the **gradlew runServer** command:  
 
 ![task runServer](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/runServer.png)  
 
 ## Add a unit test  
 
-I created a unit test to verify that the App class works as expected. This test is located in a new directory: src/test/java/basic_demo, in a file called AppTest.java. The purpose of the test is to **ensure that the App class provides a greeting message that is not null**. To make sure the project is set up for testing, I included the necessary JUnit dependency in the build.gradle file:
+I created a unit test to verify that the App class worked as expected. This test is located in a new directory: src/test/java/basic_demo, in a file called AppTest.java. The purpose of the test is to **ensure that the App class provides a greeting message that is not null**. To make sure the project is set up for testing, I included the necessary JUnit dependency in the build.gradle file:
 ```
 testImplementation 'junit:junit:4.12'
 ``` 
@@ -442,7 +442,7 @@ public class AppTest {
     }
 }
 ```  
-Once the test was set up, I ran the **.\gradlew test** command to execute it. The terminal output from running the command, shown in the image below, confirms that the test was successful:
+Once the test was set up, I ran the **gradlew test** command to execute it. The terminal output from running the command, shown in the image below, confirms that the test was successful:
 
 ![Gradle Test](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewtest.png) 
 
@@ -458,7 +458,7 @@ task backup(type:Copy){
     into 'backup'
 }
 ```  
-The image below demonstrates the successful execution of the **backup** task after running the **./gradlew backup** command:
+The image below demonstrates the successful execution of the **backup** task after running the **gradlew backup** command:
 
 ![Task backup](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewbackup.png)
 
@@ -481,7 +481,7 @@ task archive(type: Zip) {
     destinationDirectory.set(file("$buildDir"))
 }
 ```  
-The following image shows that the task was successfully executed after running the command ./gradlew archive:  
+The following image shows that the task was successfully executed after running the command gradlew archive:  
 
 ![Task archive](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewarquive.png)  
 
@@ -501,7 +501,7 @@ Completing this assignment helped me gain a better understanding of how Gradle c
 
 ## Introduction  
 
-This report provides a detailed explanation on the tasks completed in **part3 of CA1**, focusing on the transition from Maven (used in other parts of CA1) to **Gradle as a build automation tool**. This part of the assignment explores the advantages of Gradle over other tools and its role in optimizing the software development process.  
+This report provides a detailed explanation on the tasks completed in **part 3 of CA1**, focusing on the transition from Maven (used in other parts of CA1) to **Gradle as a build automation tool**. This part of the assignment explores the advantages of Gradle over other tools and its role in optimizing the software development process.  
 The report begins by outlining the process of setting up a new Spring Boot application using Gradle, detailing how the existing source code from part 1 of CA1 was incorporated into the new project structure. It then describes the integration of a plugin to manage the frontend, followed by the implementation of custom tasks that automate file management and improve project maintainability. Finally, the document explores another build automation tool.  
 
 ## Setup and configuration  
@@ -519,7 +519,7 @@ git push -u origin tut-basic-gradle
 Then a new **Spring Boot project** was initialized using **Gradle** as the build system. This was done by generating the project via [Spring Initializr](https://start.spring.io), downloading the ZIP file, and extracting it into the part3 directory.  
 To verify the project setup and check the available Gradle tasks, the following command was executed:
 ```
-./gradlew tasks
+gradlew tasks
 ```  
 The output of this command confirmed that the project has been set up correctly and that Gradle was working as expected: 
 ```
@@ -606,7 +606,7 @@ To see more detail about a task, run gradlew help --task <task>
 BUILD SUCCESSFUL in 25s
 1 actionable task: 1 executed
 ```  
-**Issue tracking:** As done in part1 and part2 of the assignment, **issues** were created to track the progress of the tasks in part3. In this case, three issues were created, each corresponding to one of the main tasks required for this part of the assignment.  
+**Issue tracking:** As done in part1 and part2 of the assignment, **issues** were created to track the progress of the tasks in part3. In this case, three issues were created, each corresponding to one of the main tasks required for this part of the assignment (Issue #8 - Copy the src folder from the basic folder of the tutorial, Issue #9 - Add copy task, Issue #10 - Add delete task).  
 
 At this point in the project, the goal was to **integrate the existing codebase from the basic tutorial** into the newly created **Gradle project**. The process followed a systematic approach to ensure the integration was successful and the application functioned correctly within the new build system.  
 
@@ -631,12 +631,12 @@ cp "C:/Users/paula/ProjetoDevOps/devops-24-25-1241898/CA1/part1/basic/package.js
 ```
 rm -r "C:/Users/paula/ProjetoDevOps/devops-24-25-1241898/CA1/part3/react-and-spring-data-rest-basic/src/main/resources/static/built"
 ```  
-**Resolving compilation errors:** After migrating the code, a compilation issue was encountered. To address this, the Employee.java class was updated due to the transition from Java EE to Jakarta EE. Specifically, the import statements were modified from **javax.persistence** to **jakarta.persistencePP. Additionally, the **package.json** file was updated to specify a fixed version of the package manager, ensuring that the project would always use the same version of npm across different environments. The following line was added:  
+**Resolving compilation errors:** After migrating the code, a compilation issue was encountered. To address this, the Employee.java class was updated due to the transition from Java EE to Jakarta EE. Specifically, the import statements were modified from **javax.persistence** to **jakarta.persistencePP**. Additionally, the **package.json** file was updated to specify a fixed version of the package manager, ensuring that the project would always use the same version of npm across different environments. The following line was added:  
 ```
 "packageManager": "npm@9.6.7"
 ```  
 
-**Testing the application:** After completing all necessary adjustments, the application was executed to verify its functionality. The command **./gradlew bootRun** was run to compile and launch the Spring Boot application. When accessing `http://localhost:8080/`, the page appeared blank. This was the expected outcome since the current Gradle configuration does not yet include the necessary plugin to process the frontend code. This issue will be addressed in the following section of this report.
+**Testing the application:** After completing all necessary adjustments, the application was executed to verify its functionality. The command **gradlew bootRun** was run to compile and launch the Spring Boot application. When accessing `http://localhost:8080/`, the page appeared blank. This was the expected outcome since the current Gradle configuration does not yet include the necessary plugin to process the frontend code. This issue will be addressed in the following section of this report.
 
 ## Configuring Gradle to Manage Frontend  
 
@@ -665,7 +665,7 @@ The scripts section in **package.json** was modified to define commands for Webp
     "test": "echo Testing frontend"
 }
 ```  
-After completing these configurations, the command **./gradlew build** was executed, and I was able to confirm the project compiled successfully, including the frontend assets. The next step was the execution of the command **./gradlew bootRun** to start the Spring Boot application. Upon visiting `http://localhost:8080/` I was able to confirm the expected frontend content was displayed as shown in the image bellow:  
+After completing these configurations, the command **gradlew build** was executed, and I was able to confirm the project compiled successfully, including the frontend assets. The next step was the execution of the command **gradlew bootRun** to start the Spring Boot application. Upon visiting `http://localhost:8080/` I was able to confirm the expected frontend content was displayed as shown in the image bellow:  
 ![Frontend](part3/react-and-spring-data-rest-basic/images/frontend.png)  
 This setup ensures that Gradle properly handles the frontend, allowing the project to run smoothly with both backend and frontend working together as expected.  
 
@@ -681,7 +681,7 @@ task copyJar(type: Copy) {
     into file("dist")
 }
 ``` 
-This task ensures that the **.jar file is copied after the bootJar task completes**, placing it in the dist folder. To execute the copyJar task, the command **./gradlew copyJar** was executed and the outcome of the task was as follows:  
+This task ensures that the **.jar file is copied after the bootJar task completes**, placing it in the dist folder. To execute the copyJar task, the command **gradlew copyJar** was executed and the outcome of the task was as follows:  
 ![Task copyJar](part3/react-and-spring-data-rest-basic/images/TaskcopyJar.png)  
 As shown in the image above, with the **dist folder circled**, the .jar file generated by the bootJar task was **successfully copied** into this directory.  
 
@@ -695,7 +695,7 @@ clean.dependsOn cleanWebpack
 This task ensures that the files in the src/main/resources/static/built/ directory are **deleted before the standard Gradle clean task runs**, ensuring a clean build environment. As shown in the first image, **before executing the task**, the built directory exists within src/main/resources/static/:  
 ![Task cleanWebpack Before](part3/react-and-spring-data-rest-basic/images/TaskcleanWebpackBefore.png)
 
-To execute the cleanWebpack task, the command **./gradlew cleanWebpack** was run. The following image shows that the **built directory was successfully deleted** after running the task:  
+To execute the cleanWebpack task, the command **gradlew cleanWebpack** was run. The following image shows that the **built directory was successfully deleted** after running the task:  
 ![Task cleanWebpack After](part3/react-and-spring-data-rest-basic/images/TaskcleanWebpackAfter.png)  
 
 As shown in the images above, the **built directory was successfully deleted**, confirming that the **cleanWebpack task** works as expected to clean the build environment.  
@@ -772,7 +772,7 @@ In summary, **Apache Ant is a viable alternative to Gradle** for automating buil
 
 ## Conclusion
 
-In **part3** of this class assignment, I explored using Gradle as a build automation tool for a Spring Boot project. While developing this project, I created custom tasks like **copyJar** and **cleanWebpack** to automate key processes, such as copying the generated .jar file to the correct directory and cleaning up unnecessary Webpack files. Through this, I learned how Gradle’s flexibility and scripting features make the build process easier and more efficient. It also highlighted the importance of automating repetitive tasks to save time and reduce the chances of errors in the development cycle.
+In **part 3** of this class assignment, I explored using Gradle as a build automation tool for a Spring Boot project. While developing this project, I created custom tasks like **copyJar** and **cleanWebpack** to automate key processes, such as copying the generated .jar file to the correct directory and cleaning up unnecessary Webpack files. Through this, I learned how Gradle’s flexibility and scripting features make the build process easier and more efficient. It also highlighted the importance of automating repetitive tasks to save time and reduce the chances of errors in the development cycle.
 Working with Gradle also showed me how to manage complex dependencies, integrate frontend tools, and create tasks tailored to specific project needs. It’s a tool that offers both simplicity for basic tasks and deep customization for more advanced requirements, making it an excellent choice for modern software projects.
 Additionally, I explored **Apache Ant**, an older build tool that still has value in certain scenarios. Ant offers **more control** over the build process using XML configuration files but **lacks the flexibility and performance optimizations found in Gradle**. While Ant is useful for projects that need **custom control** over each step, Gradle stands out as a more efficient and modern solution for most contemporary projects.
 This experience has not only improved my understanding of build automation tools but also highlighted how important it is to choose the right tool based on the specific needs of the project. Understanding both Gradle’s strengths and Ant’s role will allow me to make better decisions when working with different build systems in the future.
