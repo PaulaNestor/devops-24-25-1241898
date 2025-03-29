@@ -308,7 +308,7 @@ Branching also differs significantly between the two systems. Unlike Git, where 
 
 **Using SVN for the Assignment**:
 
-The next section describes the commands that can be used to implement the alternative design:
+The next section describes the commands that can be used to implement the alternative solution:
 
 * Setting up the repository: The following command crates a new SVN repository at the specified path on the server, setting up the necessary directory structure:
 ```
