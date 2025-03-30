@@ -5,26 +5,26 @@
 - [CA1 - Part1: Version control with Git - Technical Report](#ca1---part1-version-control-with-git---technical-report)
 - [Part 1 - Introduction](#part-1---introduction)
 - [Part 1 - Setup and configuration](#part-1---setup-and-configuration)
-- [Part 1.1 : Version control without branches](#part-11--version-control-without-branches-)
-- [Part 1.2 : Version control with branches](#part-12--version-control-with-branches-)
+- [Part 1.1 : Version control without branches](#part-11--version-control-without-branches)
+- [Part 1.2 : Version control with branches](#part-12--version-control-with-branches)
 - [Part 1 - Alternative solution](#part-1---alternative-solution)
 - [Part 1 - Conclusions](#part-1---conclusions)
 - [CA1 - Part2: Build Tools with Gradle - Technical Report](#ca1---part2-build-tools-with-gradle---technical-report)
-- [Part 2 - Introduction](#part-2---introduction-)
-- [Part 2 - Setup and configuration](#part-2---setup-and-configuration-)
-- [Part 2 - Gradle Basic Demo](#part-2---gradle-basic-demo-)
-- [Part 2 - runServer Task](#part-2---runserver-task-)
-- [Part 2 - Add a unit test](#part-2---add-a-unit-test-)
-- [Part 2 - backup Task](#part-2---backup-task-)
-- [Part 2 - archive Task](#part-2---archive-task-)
-- [Part 2 - Conclusion](#part-2---conclusion-)
+- [Part 2 - Introduction](#part-2---introduction)
+- [Part 2 - Setup and configuration](#part-2---setup-and-configuration)
+- [Part 2 - Gradle Basic Demo](#part-2---gradle-basic-demo)
+- [Part 2 - runServer Task](#part-2---runserver-task)
+- [Part 2 - Add a unit test](#part-2---add-a-unit-test)
+- [Part 2 - backup Task](#part-2---backup-task)
+- [Part 2 - archive Task](#part-2---archive-task)
+- [Part 2 - Conclusion](#part-2---conclusion)
 - [CA1 - Part3: Build Tools with Gradle - Technical Report](#ca1---part3-build-tools-with-gradle---technical-report)
-- [Part 3 - Introduction](#part-3---introduction-)
-- [Part 3 - Setup and configuration](#part-3---setup-and-configuration-)
-- [Part 3 - Integrating Existing Code](#part-3---integrating-existing-code-)
-- [Part 3 - Configuring Gradle to Manage Frontend](#part-3---configuring-gradle-to-manage-frontend-)
+- [Part 3 - Introduction](#part-3---introduction)
+- [Part 3 - Setup and configuration](#part-3---setup-and-configuration)
+- [Part 3 - Integrating Existing Code](#part-3---integrating-existing-code)
+- [Part 3 - Configuring Gradle to Manage Frontend](#part-3---configuring-gradle-to-manage-frontend)
 - [Part 3 - Add Gradle Tasks: Task copyJar and Task cleanWebpack](#part-3---add-gradle-tasks-task-copyjar-and-task-cleanwebpack)
-- [Part 3 - Alternative Solution](#part-3---alternative-solution-)
+- [Part 3 - Alternative Solution](#part-3---alternative-solution)
 - [Part 3 - Conclusion](#part-3---conclusion)
 
 # CA1 - Part1: Version control with Git - Technical Report
@@ -93,7 +93,7 @@ For the **part 1.1** of this assignment, I created two issues:
 By using issues, I maintained an organized workflow and ensured that key tasks were well-documented.  
 For the **part 1.2**, two issues were also created.
 
-## Part 1.1 : Version control without branches  
+## Part 1.1 : Version control without branches
 
 **Main goals:**  
 
@@ -270,7 +270,7 @@ git commit -m "Fixes #1 and #2: Update README.md and resolve issues"
 ```  
 The repository was also **tagged with ca1-part1.1** to signify the completion of this phase of the assignment.  
 
-## Part 1.2 : Version control with branches  
+## Part 1.2 : Version control with branches
 
 **Main goals:**  
 
@@ -391,7 +391,7 @@ This assignment improved my technical skills with Git and deepened my understand
 This report provides an overview of the tasks carried out during the **part 2  of the CA1 assignment (Build Tools with Gradle)**. This part of the assignment is divided into two different stages, that aim to  offer a hands-on experience with Gradle. The first stage is focused on the initial environment setup, while the second stage covers more complex operations such as creating tasks and unit testing into the build process.  
 The first part of the report explains how the **Gradle Basic Demo** (a multithreaded chat server) was implemented and tested. It shows the steps involved in building, launching, and connecting multiple clients to the server. The next part of the report describes how a new Gradle task was added to the project, demonstrating how Gradle can be extended to fit specific project needs and how a unit test was integrated to showcase how it improves the project's reliability by including unit tests in the build process. Finally, the report covers the addition of Copy and Zip tasks, which illustrate how Gradle can be used for managing files, an important aspect of project maintenance and distribution.  
 
-## Part 2 - Setup and configuration  
+## Part 2 - Setup and configuration
 
 **Copying the example application:** To begin the assignment, I used GitBash to create a folder called **part2** inside the CA1 folder. This was done using the following commands:
 ```
@@ -410,7 +410,7 @@ git commit -m "Creation of folder part2 of CA1"
 
 **Issue tracking:** As in part1 of the assignment, **issues** were created to track the progress of the tasks in part2. In this case, three issues were created, each corresponding to one of the main tasks required for this part of the assignment (Issue #5 - Task to execute the server, Issue #6 - Task of type Copy to make a backup of the sources of the application, Issue #7 - Task of type Zip to make an archive of the sources of the application #7).
 
-## Part 2 - Gradle Basic Demo  
+## Part 2 - Gradle Basic Demo
 
 After reading the README file provided in the project, which explains how the application works, the next step was to test it. First, the following command was executed :
 ```
@@ -435,7 +435,7 @@ This command starts a chat client and connects it to the server, allowing intera
 ![chatter1](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/chatter3.png)  
 
 
-## Part 2 - runServer Task 
+## Part 2 - runServer Task
 
 In Gradle, tasks are used to **automate** various steps of a project, such as compiling, and running applications. By defining a set of instructions that Gradle executes when called, tasks help simplify repetitive actions in the development process.  
 To make running the server easier, a new task called **runServer** was added to the **build.gradle** file. This task, of type **JavaExec**, allows the server to be started automatically with a single command. It depends on the classes task, ensuring that all necessary classes are compiled before the server starts. The task is configured to launch the ChatServerApp main class on port 59001. Below is the code I added to the build.gradle file to create the task:
@@ -455,7 +455,7 @@ The image bellow demonstrates the successful execution of the runServer task aft
 
 ![task runServer](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/runServer.png)  
 
-## Part 2 - Add a unit test  
+## Part 2 - Add a unit test
 
 I created a unit test to verify that the App class worked as expected. This test is located in a new directory: src/test/java/basic_demo, in a file called AppTest.java. The purpose of the test is to **ensure that the App class provides a greeting message that is not null**. To make sure the project is set up for testing, I included the necessary JUnit dependency in the build.gradle file:
 ```
@@ -475,7 +475,7 @@ Once the test was set up, I ran the **gradlew test** command to execute it. The 
 
 ![Gradle Test](part2/pssmatos-gradle_basic_demo/pssmatos-gradle_basic_demo-d8cc2d7443c5/images/gradlewtest.png) 
 
-## Part 2 - backup Task 
+## Part 2 - backup Task
 
 The next task created and added to the build.gradle file was the backup task (facilitates the backup of the project's source code). This task, of **type Copy**, automatically copies the contents of the src folder into a new folder called backup. Below is the code I added to the build.gradle file in order to create the task:  
 ```
@@ -497,7 +497,7 @@ Following the task execution, the backup folder was created successfully in the 
 
 Since this folder is automatically generated by Gradle and can be recreated at any time by running the backup task again, the backup folder was not committed to the remote repository. To maintain a clean repository, the backup folder was excluded and added to the .gitignore file. This ensures that backup files are stored locally and do not interfere with the version-controlled codebase.  
 
-## Part 2 - archive Task 
+## Part 2 - archive Task
 
 The final task involved creating a task of **type Zip**. This task helps simplify the process of creating an archive of the project's source code. This last task automates the process of zipping the contents of the src folder into a .zip file, which can be useful for backups or distribution. The task is configured to create the archive file as src_backup.zip and store it in the build directory. Below is the code I added to the build.gradle file to create the task:  
 ```
@@ -522,18 +522,18 @@ As with the backup task, since the src_backup.zip file is automatically generate
 
 At the end of the assignment, the repository was **tagged with ca1-part2**.
 
-## Part 2 - Conclusion  
+## Part 2 - Conclusion
 
 Completing this assignment helped me gain a better understanding of how Gradle can be used as a **build tool**. By creating tasks like **runServer**, **backup**, and **archive**, I automated important parts of the development process. Automating tasks makes the process faster, reduces the chances of mistakes, and saves time by avoiding manual work. Adding unit tests to the build process showed how automation can make testing easier and more reliable. Overall, this experience improved my knowledge of Gradle and how it can make development more efficient.  
 
 # CA1 - Part3: Build Tools with Gradle - Technical Report
 
-## Part 3 - Introduction  
+## Part 3 - Introduction
 
 This report provides a detailed explanation on the tasks completed in **part 3 of CA1**, focusing on the transition from Maven (used in other parts of CA1) to **Gradle as a build automation tool**. This part of the assignment explores the advantages of Gradle over other tools and its role in optimizing the software development process.  
 The report begins by outlining the process of setting up a new Spring Boot application using Gradle, detailing how the existing source code from part 1 of CA1 was incorporated into the new project structure. It then describes the integration of a plugin to manage the frontend, followed by the implementation of custom tasks that automate file management and improve project maintainability. Finally, the document explores another build automation tool.  
 
-## Part 3 - Setup and configuration  
+## Part 3 - Setup and configuration
 
 **Set up initial Gradle Project:** The setup began with the creation of the **part3** directory inside the **CA1 folder**. This was done using Git Bash with the following commands:  
 ```
@@ -639,7 +639,7 @@ BUILD SUCCESSFUL in 25s
 
 At this point in the project, the goal was to **integrate the existing codebase from the basic tutorial** into the newly created **Gradle project**. The process followed a systematic approach to ensure the integration was successful and the application functioned correctly within the new build system.  
 
-## Part 3 - Integrating Existing Code  
+## Part 3 - Integrating Existing Code
 
 The next step was to integrate the **src folder** from the basic tutorial into the Gradle project. The integration process followed these steps:  
 
@@ -667,7 +667,7 @@ rm -r "C:/Users/paula/ProjetoDevOps/devops-24-25-1241898/CA1/part3/react-and-spr
 
 **Testing the application:** After completing all necessary adjustments, the application was executed to verify its functionality. The command **gradlew bootRun** was run to compile and launch the Spring Boot application. When accessing `http://localhost:8080/`, the page appeared blank. This was the expected outcome since the current Gradle configuration does not yet include the necessary plugin to process the frontend code. This issue will be addressed in the following section of this report.
 
-## Part 3 - Configuring Gradle to Manage Frontend  
+## Part 3 - Configuring Gradle to Manage Frontend
 
 To integrate frontend management into the Gradle build process, the **org.siouan.frontend-gradle-plugin** was added. This plugin allows Gradle to handle **frontend dependencies** and tasks similarly to how the frontend-maven-plugin does in Maven-based projects.  
 This particular project uses Java 17, so the dependency included in the plugins block of **build.gradle** was the following:
@@ -731,7 +731,7 @@ As shown in the images above, the **built directory was successfully deleted**, 
 
 With these custom Gradle tasks, the build process is now more **automated and efficient**, ensuring that required files are properly managed while keeping the build environment clean. These improvements help prevent potential conflicts caused by outdated artifacts and unnecessary files.
 
-## Part 3 - Alternative Solution  
+## Part 3 - Alternative Solution
 
 **Ant vs Gradle:**  
 
