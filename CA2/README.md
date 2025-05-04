@@ -19,13 +19,18 @@
 - [Part 2 - Running the Application](#part-2---running-the-application)
 - [Part 2 - Alternative Solution](#part-2---alternative-solution)
 - [Part 2 - Conclusion](#part-2---conclusion)
+- [CA2 - Part3: Containers with Docker - Technical Report](#ca2---part3-containers-with-docker---technical-report)
+- [Part 3 - Introduction](#part-3---introduction)
+- [Part 3 - Environment Setup](#part-3---environment-setup)
+- [Part 3 - Dockerfile: Version 1](#part-3---dockerfile-version-1)
+- [Part 3 - Dockerfile: Version 2](#part-3---dockerfile-version-2)
+- [Part 3 - Conclusion](#part-3---conclusion)
 
 # CA2 - Part1: Virtualization with Vagrant - Technical Report
 
 Author: Ana Paula Lopes Nestor
 
 Programme: SWitCH DEV
-
 
 Course: DevOps
 
@@ -519,7 +524,196 @@ No changes to the application code or provisioning logic are needed to support V
 
 This report documented the process of **setting up and running a virtualized development environment** using Vagrant for CA2 - Part 2. The main goal was to **deploy a Spring Boot application connected to an H2 database**, and this was successfully achieved by modifying a base Vagrantfile, configuring SSH access, and adapting the Spring project to work within a multi-VM setup.
 Throughout the assignment, I applied key DevOps practices such as environment automation, service provisioning, and system orchestration. I validated the application by interacting both with the frontend and the H2 database console, ensuring everything was running as expected in the virtual environment. Additionally, I explored **VMware as an alternative to VirtualBox**. Despite requiring additional setup and licensing, VMware offers stronger performance and a richer feature set, especially for larger or more complex systems. One of the main takeaways was understanding how to switch providers without needing to rewrite the core application or provisioning scripts — something that highlights the flexibility of infrastructure-as-code tools like Vagrant.
-This assignment gave me the opportunity to really understand how backend services and virtual environments can work together in practice. It pushed me to troubleshoot real-world issues, like dealing with private repository authentication and managing SSH keys. These small challenges helped me feel more confident in working with DevOps tools and gave me a clearer picture of how applications are deployed and run outside the IDE, in environments that simulate real production setups.
+This assignment gave me the opportunity to really understand how backend services and virtual environments can work together in practice. It pushed me to troubleshoot real-world issues, like dealing with private repository authentication and managing SSH keys. These small challenges helped me feel more confident in working with DevOps tools and gave me a clearer picture of how applications are deployed and run outside the IDE, in environments that simulate real production setups.  
+
+# CA2 - Part3: Containers with Docker - Technical Report
+
+## Part 3 - Introduction
+
+The main goal of this assignment is to get hands-on experience with **Docker by creating Docker images** and running containers using the chat application previously used in CA1 - Part 2.  
+By running the chat server inside a **Docker container**, we make sure it works consistently across different systems, which is one of Docker’s key advantages. This also reflects practices commonly used in modern development and deployment workflows.
+
+The assignment was split into two versions:
+1. Building the chat server **directly inside the Dockerfile**, where the image handles the compilation process.
+2. Building the server on the **host machine and copying the compiled `.jar` file into the Docker image**.
+
+In this report, I explain the steps I followed to implement both versions, including how the Dockerfiles were created, how the images were built and published, and how the application was tested by connecting the client to the containerized server.
+
+## Part 3 - Environment Setup
+
+To start working on this assignment, I first made sure Docker was installed and working correctly on my system. After installation, I verified the version by running:  
+```
+docker --version
+```  
+Then, I logged into Docker Hub from the command line using:
+```
+docker login
+```  
+Next, I organized the project files by creating a new directory inside the existing CA2 folder:
+```
+mkdir part3
+cd part3
+mkdir Version1
+```  
+Inside the **Version1 folder**, I created a **new Dockerfile**, which I used to define the image for the first version of the chat server container. The chat server code used for this assignment comes from the Bitbucket repository originally used in CA1 - Part 2. It contains a basic Gradle-based Java application.  
+
+## Part 3 - Dockerfile: Version 1
+
+To run the chat server **inside a Docker container**, as said previously, I first created a new `Dockerfile` inside the `Version1` directory. The Dockerfile is a script that **defines the steps to build a Docker image for the chat server**, and uses a multi-stage build. Below is the content of the Dockerfile:  
+```
+# Specifies a base image with Gradle and JDK 17 to compile the application
+FROM gradle:jdk17 AS builder
+
+# Moves into the project directory
+WORKDIR /CA2/part3/Version1
+
+# Clones the Bitbucket repository containing the chat server source code
+RUN git clone https://bitbucket.org/pssmatos/gradle_basic_demo.git
+
+# Changes into the cloned repository
+WORKDIR /CA2/part3/Version1/gradle_basic_demo
+
+# Gives execution permissions to the Gradle wrapper and builds the project, generating the .jar file in the build/libs directory.
+RUN chmod +x gradlew && ./gradlew build --no-daemon
+
+# Uses a lightweight JRE-only image suitable for running Java applications
+FROM eclipse-temurin:17-jre
+
+# Creates and sets /app as the working directory inside the container
+WORKDIR /app
+
+# Copies the compiled .jar from the first stage into the final image
+COPY --from=builder /CA2/part3/Version1/gradle_basic_demo/build/libs/basic_demo-0.1.0.jar /app/basic_demo-0.1.0.jar
+
+# Documents that the application uses port 59001
+EXPOSE 59001
+
+# Defines the command to start the chat server when the container runs
+ENTRYPOINT ["java", "-cp", "/app/basic_demo-0.1.0.jar", "basic_demo.ChatServerApp", "59001"]
+```  
+This approach ensures that only the necessary runtime files are included in the final image, keeping it minimal and optimized for execution.  
+
+I **built the Docker image** by navigating to the directory where the Dockerfile is located and running the following command:  
+```
+docker build -t paulanestor/chat-server:1.0 .
+```  
+The -t flag tags the image with a **name** (paulanestor/chat-server) and **version** (1.0). 
+
+To verify that the **image was successfully created**, I ran:
+```
+docker images
+```  
+The output listed the paulanestor/chat-server:1:0 image, confirming it was built correctly:  
+![docker images v1](images/dockerImagesVersion1.png)  
+
+After successfully building the Docker image, I **ran the container** using the following command:  
+```
+docker run -p 59001:59001 paulanestor/chat-server:1.0
+```  
+The -p flag **maps port 59001 on the host machine to port 59001 inside the container**, allowing external clients to connect to the server running in the Docker container. The image below shows the Docker container running the chat server:
+![docker run v1](images/dockerRunVersion1.png)  
+
+With the server running, I opened a new terminal window, navigated to the directory containing the chat client, and executed the following commands to build and run the client:
+```
+./gradlew build
+./gradlew runClient
+```  
+I tested the chat functionality by connecting **two separate clients** to the server running in the Docker container. Messages could be sent and received successfully between clients, as seen below:  
+![runClient1 v1](images/chatClient1Version1.png)  
+![runClient2 v1](images/chatClient2Version1.png)  
+
+Finally, I pushed the image to **Docker Hub** using the following command:
+```
+docker push paulanestor/chat-server:1.0
+```  
+The image was **successfully uploaded** and is now available in my Docker Hub repository:  
+![Docker Hub v1](images/DockerHubVersion1.png)  
+
+## Part 3 - Dockerfile: Version 2
+
+In the **second version**, instead of building the chat server inside the Docker image, I **built the application on my host machine** and then **copied the precompiled JAR file into the image**. This approach **simplifies the Dockerfile** by avoiding the need to clone the repository or build the project during the image creation. The JAR file can be generated by running the following command from the root directory of the chat server project:  
+```
+./gradlew build
+```
+This command produces the file `basic_demo-0.1.0.jar` in the `build/libs/` directory.
+
+First, I created a new directory for Version 2:
+```
+mkdir Version2
+```  
+Then, I created a **new Dockerfile** inside the Version2 directory.
+
+```
+# Use a Gradle image with JDK 21 to copy and run the application
+FROM gradle:jdk21
+
+# Creates and sets /app as the working directory inside the container
+WORKDIR /app
+
+# Copy the pre-built JAR file from the host into the container
+COPY CA2/Part1/gradle_basic_demo/build/libs/basic_demo-0.1.0.jar /app/basic_demo-0.1.0.jar
+
+# Documents that the application uses port 59001
+EXPOSE 59001
+
+# Defines the command to start the chat server when the container runs
+ENTRYPOINT ["java", "-cp", "/app/basic_demo-0.1.0.jar", "basic_demo.ChatServerApp", "59001"]
+```  
+This Dockerfile assumes the .jar file was already built on the host system and is located at the specified path, which was the goal of Dockerfile's second version.  
+
+After that, I navigated to the root project directory and ran the following command to **build the Docker image**:  
+```
+docker build -f CA2/part3/Version2/Dockerfile -t paulanestor/chat-server:2.0 .
+```  
+The -f flag specifies the path to the Dockerfile, and the -t flag is used to tag the image (paulanestor/chat-server:2.0).  
+
+To verify the image was created, I ran:  
+```
+docker images
+```  
+The output listed the paulanestor/chat-server:1:0 and paulanestor/chat-server:2:0 images, confirming it was built correctly:  
+![docker images v2](images/dockerImagesVersion2.png)  
+
+To **start the server inside a Docker container**, I used:  
+```
+docker run -p 59001:59001 paulanestor/chat-server:2.0
+```  
+This **mapped port 59001 from the container to the host**, allowing chat clients running on the host to connect to the containerized server. The image bellow shows the server running:  
+![docker run v2](images/dockerRunVersion2.png)  
+
+In a separate terminal, I navigated to the chat client directory and ran:  
+```
+./gradlew runClient
+```  
+I opened two separate terminals and ran the client to test the chat functionality. Messages were successfully exchanged as seen in the images bellow:  
+![runClient1 v2](images/chatClient1Version2.png)  
+![runClient2 v2](images/chatClient2Version2.png)  
+
+Finally, I pushed the image to **Docker Hub** with the following command:  
+```
+docker push paulanestor/chat-server:2.0
+```  
+The image is now available on Docker Hub:
+![Docker Hub v2](images/DockerHubVersion2.png)  
+
+## Part 3 - Conclusion
+
+## Conclusion
+
+Docker is a platform that allows developers to **package applications** and their dependencies into lightweight, portable **containers that can run consistently across different environments**. This eliminates the "it works on my machine" problem and simplifies the deployment process across development, staging, and production systems. In this assignment, I explored the use of Docker to containerize a Java-based chat server application. I implemented two distinct approaches:  
+
+- **Version 1**: The entire build process was handled inside the Dockerfile. This involved cloning the project repository and compiling the application within the container. This approach ensures that the build environment is completely isolated and reproducible.
+- **Version 2**: The application was compiled on the host machine, and only the final `.jar` file was copied into the Docker image. This resulted in a simpler Dockerfile and faster build times, making it more practical for projects where the host environment is already properly configured.  
+
+By working on both approaches, I gained hands-on experience with writing Dockerfiles, managing multi-stage builds, exposing ports, running containers, and publishing images to Docker Hub. I also tested how a local chat client could communicate with the server running inside a container, reinforcing the concept of container-to-host interaction.
+
+The main advantages of using Docker in this context included:
+- **Portability**: The server runs identically regardless of the host system.
+- **Isolation**: Dependencies and runtime environments are encapsulated within the container.
+- **Consistency**: Builds and executions are repeatable and less prone to environmental errors.
+- **Simplicity in deployment**: Once the image is built and pushed to Docker Hub, the application can be deployed on any system with Docker installed.
+
+Overall, this assignment demonstrated how Docker can streamline the development and deployment process and is an essential tool in modern DevOps workflows.
 
 
 
