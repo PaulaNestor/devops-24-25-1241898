@@ -564,7 +564,7 @@ To run the chat server **inside a Docker container**, as said previously, I firs
 # Specifies a base image with Gradle and JDK 17 to compile the application
 FROM gradle:jdk17 AS builder
 
-# Moves into the project directory
+# Creates and moves into the working directory
 WORKDIR /CA2/part3/Version1
 
 # Clones the Bitbucket repository containing the chat server source code
