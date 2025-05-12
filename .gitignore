@@ -336,6 +336,7 @@ $RECYCLE.BIN/
 *.msp
 
 .vagrant/
+/CA2/part4/backup/
 
 # Windows shortcuts
 *.lnk
