@@ -25,6 +25,16 @@
 - [Part 3 - Dockerfile: Version 1](#part-3---dockerfile-version-1)
 - [Part 3 - Dockerfile: Version 2](#part-3---dockerfile-version-2)
 - [Part 3 - Conclusion](#part-3---conclusion)
+- [CA2 - Part4: Containers with Docker - Technical Report](#ca2---part4-containers-with-docker---technical-report)
+- [Part 4 - Introduction](#part-4---introduction)
+- [Part 4 - Setup and Configuration](#part-4---setup-and-configuration)
+- [Part 4 - DB Dockerfile](#part-4---db-dockerfile)
+- [Part 4 - Web Dockerfile](#part-4---web-dockerfile)
+- [Part 4 - Docker Compose](#part-4---docker-compose)
+- [Part 4 - Tag and Push Images](#part-4---tag-and-push-images)
+- [Part 4 - Working with Volumes](#part-4---working-with-volumes)
+- [Part 4 - Alternative Solution](#part-4---alternative-solution)
+- [Part 4 - Conclusion](#part-4---conclusion)
 
 # CA2 - Part1: Virtualization with Vagrant - Technical Report
 
@@ -713,7 +723,275 @@ The main advantages of using Docker in this context included:
 - **Consistency**: Builds and executions are repeatable and less prone to environmental errors.
 - **Simplicity in deployment**: Once the image is built and pushed to Docker Hub, the application can be deployed on any system with Docker installed.
 
-Overall, this assignment demonstrated how Docker can streamline the development and deployment process and is an essential tool in modern DevOps workflows.
+Overall, this assignment demonstrated how Docker can streamline the development and deployment process and is an essential tool in modern DevOps workflows.  
+
+# CA2 - Part4: Containers with Docker - Technical Report
+
+## Part 4 - Introduction
+
+In the technical report of the **part4** of the **CA2** assignment, I will describe the process of containerizing a Spring-based web application using Docker. The main goal was to build and deploy both the web application and its database as isolated services within containers.
+The project involved **creating Dockerfiles** for each service, **configuring a docker-compose.yaml file** to manage the containers, and **pushing the resulting images to Docker Hub**.  
+This exercise provided practical experience with Docker-based deployment workflows and reinforced the concepts of containerization and modern application deployment.  
+
+## Part 4 - Setup and Configuration
+
+To begin the project structure, I created the necessary directories to organize the components of the application:
+
+```
+mkdir part4
+cd part4
+mkdir db
+mkdir web
+```  
+
+The part4 folder serves as the root directory for this stage of the assignment. Inside part4, the **db folder** is used to hold everything related to the **H2 database**. The **web folder** contains the files for the **Spring web application**.
+After setting up the folder structure, I created a **Dockerfile inside each of the db and web folders**.
+These two Dockerfiles are later referenced in the docker-compose.yaml file to orchestrate the application's services.  
+
+## Part 4 - DB Dockerfile
+
+I started by creating a Dockerfile for the database service, which in this case was an H2 database server:
+
+```
+# Use a lightweight base image with Java Runtime Environment 11 (suitable for production)
+FROM openjdk:11-jre-slim
+
+# Update package list, install only what is necessary (wget), and remove cached files to keep the image small
+RUN apt-get update \
+&& apt-get install -y wget \
+&& rm -rf /var/lib/apt/lists/*
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Download the H2 database JAR file from Maven repository
+RUN wget https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
+
+# Expose ports used by H2: 8082 (web interface) and 9092 (TCP connections)
+EXPOSE 9092 8082
+
+# Run the H2 database server with web and TCP interfaces enabled,
+# allowing external connections and creating the database if it doesn't exist
+CMD ["java", "-cp", "./h2-1.4.200.jar", "org.h2.tools.Server", \
+"-tcp", "-tcpAllowOthers", "-ifNotExists", \
+"-web", "-webAllowOthers"]
+```  
+
+## Part 4 - Web Dockerfile
+
+Then, I created a Dockerfile in the web directory with the following content:  
+
+```
+# Use a lightweight JDK 17 image as the base, ideal for building Java applications
+FROM openjdk:17-jdk-slim
+
+# Update package list, install Git (needed to clone the project), and clean cache to keep the image small
+RUN apt-get update \
+    && apt-get install -y git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Clone the project repository into the current working directory
+RUN git clone https://github.com/PaulaNestor/devops-24-25-1241898.git .
+
+# Change directory to the Spring Boot project path inside the cloned repository
+WORKDIR /usr/src/app/CA1/part3/react-and-spring-data-rest-basic
+
+# Give execute permission to the Gradle wrapper and build the application JAR file
+RUN chmod +x gradlew \
+    && ./gradlew clean bootJar
+
+# Expose port 8080 used by the Spring Boot application
+EXPOSE 8080
+
+# Define the command to run the built Spring Boot application
+CMD ["java", "-jar", "build/libs/react-and-spring-data-rest-basic-0.0.1-SNAPSHOT.jar"]
+```  
+
+## Part 4 - Docker Compose
+
+To manage both the database and web application containers, the docker-compose.yaml file defines two services: web and db.
+
+```
+services:
+  db:
+    build:
+      context: ./db             # Builds the image from the Dockerfile in ./db
+    container_name: ca2p4-db    # Names the container for easier reference
+    ports:
+      - "9092:9092"             # H2 database TCP port
+      - "8082:8082"             # H2 web console port
+    volumes:
+      - h2data:/usr/src/app     # Mounts a named volume for data persistence
+    networks:
+      - ca2net                  # Connects to a custom bridge network
+
+  web:
+    build:
+      context: ./web            # Builds the image from the Dockerfile in ./web
+    container_name: ca2p4-web   # Names the container for easier reference
+    ports:
+      - "8080:8080"             # Exposes the Spring Boot app on port 8080
+    depends_on:
+      - db                      # Ensures the db service starts before web
+    environment:
+      SPRING_DATASOURCE_URL:      jdbc:h2:tcp://db:9092/./test  # H2 database connection URL
+      SPRING_DATASOURCE_USERNAME: sa                            # Default H2 username
+      SPRING_DATASOURCE_PASSWORD:                               # No password required
+      SPRING_H2_CONSOLE_ENABLED:  "true"                         # Enables H2 web console
+      SPRING_H2_CONSOLE_PATH:     /h2-console                    # Console path
+    networks:
+      - ca2net                  # Connects to the same network as db
+
+volumes:
+  h2data:                      # Named volume for H2 data
+
+networks:
+  ca2net:
+    driver: bridge              # Uses the default bridge driver
+```  
+
+To build and run the services defined in the docker-compose.yaml file, I executed the following command:
+
+```
+docker-compose up --build
+```  
+
+Once the services are running, it is possible to access the web application at http://localhost:8080/basic-0.0.1-SNAPSHOT/. The image bellow shows the access to the web application:  
+![Web application](images/DockerComposeWeb.png)  
+
+It is also possible to access the database console at http://localhost:8082. When using the H2 console, I used the following JDBC URL to connect to the database:
+```
+jdbc:h2:tcp://db:9092/./test
+```  
+The image bellow shows the access to the database console:
+![Database console](images/DockerComposeDatabase.png)  
+
+## Part 4 - Tag and Push Images
+
+To ensure that the images were correctly tagged and pushed to the Docker Hub repository, first I listed all local Docker images to confirm that the images were built:
+```
+docker images
+```  
+![Docker images](images/DockerImages.png)  
+This command shows all available images along with their repository, tag, and image ID.  
+Before pushing the images, I logged in to my Docker Hub account:
+```
+docker login
+```  
+Then, I pushed the images directly to Docker Hub using the following commands:
+```
+docker push paulanestor/part4-web:web
+docker push paulanestor/part4-db:db
+```  
+These commands uploaded the images to my Docker Hub repositories. The following images show the successful push of the images to Docker Hub:  
+![Docker Hub web](images/DockerHub1.png)  
+![Docker Hub db](images/DockerHub2.png)  
+
+## Part 4 - Working with Volumes
+
+To ensure the H2 database file was copied and persisted correctly using a Docker volume, I followed these steps:  
+
+- I used docker exec to open a shell inside the ca2p4-db container:  
+```
+docker exec -it ca2p4-db bash
+```  
+- Inside the container, I created a directory to store the backup files:
+```
+mkdir -p /usr/src/data-backup
+```  
+- Still inside the container, I copied the H2 JAR file and the database file to the backup directory:  
+```
+cp /usr/src/app/h2-1.4.200.jar /usr/src/data-backup/
+[ -f /usr/src/app/test.mv.db ] && cp /usr/src/app/test.mv.db /usr/src/data-backup/
+```  
+- Then I exited the container:
+```
+exit
+```  
+- Back on the host machine, I created a backup folder in the project directory:
+```
+mkdir backup
+```  
+- Then, I copied the files from the container’s volume to the local machine:
+```
+docker cp ca2p4-db:/usr/src/data-backup/test.mv.db ./backup/
+docker cp ca2p4-db:/usr/src/data-backup/h2-1.4.200.jar ./backup/
+```  
+This process ensures that the database file and the required JAR are safely backed up from the container volume to the host filesystem.  
+
+## Part 4 - Alternative Solution
+
+**Kubernetes** is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications. It can run containers from any container runtime (like Docker), and is widely used for managing production workloads across clusters of machines. While **Docker** is primarily a tool for building and running containers, **Kubernetes** is focused on orchestrating and managing multiple containers across a distributed environment.  
+
+Kubernetes vs Docker (Compose):  
+
+| Feature              | Docker / Docker Compose                            | Kubernetes                                                  |
+|----------------------|----------------------------------------------------|-------------------------------------------------------------|
+| **Purpose**          | Local containerization and multi-container setup   | Production-grade orchestration and scaling                 |
+| **Orchestration**    | Basic (`docker-compose up`)                        | Advanced (scheduling, self-healing, rolling updates)        |
+| **Scalability**      | Limited                                            | Built-in support for scaling deployments                    |
+| **Networking**       | Simplified (bridge or host networks)               | Full-featured service discovery + DNS                       |
+| **Storage Volumes**  | Supported via volumes in Compose                   | Managed via Persistent Volumes (PVs/PVCs)                   |
+| **Service Dependencies** | Via `depends_on` in Compose                   | Handled via probes, health checks, and Services             |
+| **Image Hosting**    | Docker Hub, local registry                         | Same, plus Kubernetes-native `imagePullSecrets`             |
+| **Configuration Files** | `docker-compose.yml`                          | YAML manifests: Deployment, Service, Volume, etc.           |
+
+Here’s how each of the assignment goals could be achieved using **Kubernetes**:  
+
+1. Containerized Environment for Spring + H2 App  
+
+Create two Kubernetes **Deployments**:
+- One for the **Spring Boot** application (`web`)
+- One for the **H2** database (`db`)
+
+Use a **Service** to expose each pod internally (and optionally externally for the web app).  
+
+2. Multi-Container Setup  
+
+Use Kubernetes **Deployments** and **Services** instead of Docker Compose.  
+Define a Deployment YAML for both `web` and `db`, including:
+- Container specs
+- Ports
+- Environment variables  
+
+3. Push to Docker Hub  
+
+Same as Docker:
+- Build and push images using `docker push`.
+
+Kubernetes will pull the images using `imagePullPolicy` and the Docker Hub URL.
+
+4. Volume for Database File  
+
+Define a **PersistentVolume (PV)** and a **PersistentVolumeClaim (PVC)** in Kubernetes.
+- Mount the PVC to the H2 container to store the `.mv.db` file.
+- You can `kubectl exec` into the `db` pod to copy the database file to the mounted volume.  
+
+5. YAML Files Instead of Compose  
+
+Instead of a `docker-compose.yaml`, Kubernetes uses multiple YAML files:
+
+- `deployment-db.yaml`
+- `deployment-web.yaml`
+- `service-db.yaml`
+- `service-web.yaml`
+- `persistent-volume.yaml`
+- `persistent-volume-claim.yaml`  
+
+While **Docker Compose** is ideal for local development and simpler setups, **Kubernetes** offers a powerful, scalable, and production-ready alternative. It requires more configuration upfront, but excels at handling complex containerized applications across distributed systems.
+By translating the Docker-based solution in this assignment to Kubernetes, we gain experience with real-world orchestration techniques that are widely used in **DevOps** and **cloud-native** environments.  
+
+## Part 4 - Conclusion
+
+Throughout this project, I gained hands-on experience in containerizing applications using Docker, and orchestrating a multi-container environment with Docker Compose. I successfully built a containerized setup for a Spring Boot web application and an H2 database, learning how to write Dockerfiles, expose ports, manage environment variables, and ensure persistent storage using volumes.
+Docker Compose played a central role in coordinating the services, allowing me to define and manage multiple containers with ease. By using a `docker-compose.yaml` file, I was able to launch, monitor, and connect the application and database services efficiently. This process deepened my understanding of container networking, inter-service communication, and the benefits of isolating application components within containers.
+A significant takeaway from this experience was the value of reproducibility and portability in software deployment. With Docker, I could create a consistent environment across different systems, reducing issues related to dependency mismatches or manual setup steps.
+In addition to the Docker-based solution, I explored **Kubernetes** as an alternative orchestration platform. This exploration provided a glimpse into how applications can be managed in production-grade environments using modern DevOps practices.
+Overall, this project strengthened my understanding of containerization, service orchestration, and the practical application of Docker in real-world development scenarios, while also introducing me to the broader ecosystem of tools like Kubernetes that are shaping the future of cloud-native application deployment.
+
 
 
 
